@@ -2,6 +2,8 @@
 
 A browser-based isometric pixel-art 3D living simulation of the city of **Opole, Poland**, built in strict accordance with the [`izo.md`](file:///home/lucius/Priv/AGY/Opole-IZO/izo.md) implementation specification.
 
+![Opole Rynek — Isometric 3D Living City](docs/opole-rynek.png)
+
 ---
 
 ## 🌟 Highlights
