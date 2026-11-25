@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Opole-IZO — Isometric Living City Map</title>
+  <meta name="description" content="Isometric pixel-art 3D living simulation of the city of Opole, Poland. Hand-modelled landmarks, live MZK buses, trains, traffic, pedestrians, weather and seasons.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e74c3c'/><text y='.9em' font-size='80'>🏰</text></svg>">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- WebGL Canvas Container -->
+    <div id="viewport"></div>
+
+    <!-- Retro HUD Header -->
+    <header id="hud-header">
+      <div class="hud-brand">
+        <span class="hud-logo">OPOLE-IZO</span>
+        <span class="hud-badge" id="hud-crs">EPSG:2180</span>
+      </div>
+      <div class="hud-info">
+        <span id="hud-clock" title="Czas symulacji">12:00</span>
+        <span id="hud-weather" title="Pogoda">Słonecznie 14°C</span>
+        <span id="hud-fps" title="Klatki na sekundę">60 FPS</span>
+      </div>
+    </header>
+
+    <!-- Quick Navigation / POI Ribbon -->
+    <nav id="hud-poi-ribbon">
+      <button class="poi-btn" data-poi="rynek">Rynek</button>
+      <button class="poi-btn" data-poi="wieza">Wieża Piastowska</button>
+      <button class="poi-btn" data-poi="amfiteatr">Amfiteatr</button>
+      <button class="poi-btn" data-poi="katedra">Katedra</button>
+      <button class="poi-btn" data-poi="wenecja">Wenecja Opolska</button>
+      <button class="poi-btn" data-poi="dworzec">Dworzec Główny</button>
+      <button class="poi-btn" data-poi="bolko">Wyspa Bolko (Zoo)</button>
+      <button class="poi-btn" data-poi="nwk">Nowa Wieś Królewska</button>
+      <button class="poi-btn" data-poi="cmentarz">Cmentarz Półwieś</button>
+      <button class="poi-btn" data-poi="opole">Całe Opole</button>
+    </nav>
+
+    <!-- Floating Action Buttons -->
+    <div id="hud-actions">
+      <button id="btn-rotate-left" class="action-btn" title="Obróć w lewo (A / Q)">↺</button>
+      <button id="btn-rotate-right" class="action-btn" title="Obróć w prawo (D / E)">↻</button>
+      <button id="btn-tour" class="action-btn" title="Wycieczka z przewodnikiem (T)">🎬</button>
+      <button id="btn-photo" class="action-btn" title="Zrób zdjęcie (P)">📷</button>
+      <button id="btn-panel-toggle" class="action-btn active" title="Ustawienia symulacji (U)">⚙️</button>
+    </div>
+
+    <!-- Advanced Simulation Drawer Panel -->
+    <aside id="sim-panel" class="panel-open">
+      <div class="panel-header">
+        <h2>Panel Kontrolny</h2>
+        <button id="btn-panel-close">✕</button>
+      </div>
+
+      <div class="panel-section">
+        <h3>Czas i Prędkość</h3>
+        <div class="control-row">
+          <label for="time-slider">Pora dnia: <span id="time-val">12:00</span></label>
+          <input type="range" id="time-slider" min="0" max="24" step="0.1" value="12">
+        </div>
+        <div class="btn-group">
+          <button class="speed-btn" data-speed="0">Pauza</button>
+          <button class="speed-btn active" data-speed="1">1x (Realny)</button>
+          <button class="speed-btn" data-speed="5">5x</button>
+          <button class="speed-btn" data-speed="60">60x</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Pora Roku</h3>
+        <div class="btn-group four-btn">
+          <button class="season-btn active" data-season="0">Lato</button>
+          <button class="season-btn" data-season="1">Jesień</button>
+          <button class="season-btn" data-season="2">Zima</button>
+          <button class="season-btn" data-season="3">Wiosna</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Pogoda</h3>
+        <div class="btn-group weather-grid">
+          <button class="weather-btn" data-weather="auto">Auto (Live)</button>
+          <button class="weather-btn active" data-weather="clear">Czysto</button>
+          <button class="weather-btn" data-weather="clouds">Chmury</button>
+          <button class="weather-btn" data-weather="rain">Deszcz</button>
+          <button class="weather-btn" data-weather="snow">Śnieg</button>
+          <button class="weather-btn" data-weather="storm">Burza</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Warstwy Życia</h3>
+        <label class="toggle-row">
+          <span>Autobusy MZK (Live GPS)</span>
+          <input type="checkbox" id="toggle-buses" checked>
+        </label>
+        <label class="toggle-row">
+          <span>Ruch Samochodowy i Światła</span>
+          <input type="checkbox" id="toggle-traffic" checked>
+        </label>
+        <label class="toggle-row">
+          <span>Piesi i Ogródki Kawiarniane</span>
+          <input type="checkbox" id="toggle-pedestrians" checked>
+        </label>
+        <label class="toggle-row">
+          <span>Pociągi PKP / Polregio</span>
+          <input type="checkbox" id="toggle-trains" checked>
+        </label>
+        <label class="toggle-row">
+          <span>Szybownictwo i Lotnictwo</span>
+          <input type="checkbox" id="toggle-aviation" checked>
+        </label>
+        <label class="toggle-row">
+          <span>Latarnie i Okna Nocą</span>
+          <input type="checkbox" id="toggle-nightlights" checked>
+        </label>
+      </div>
+
+      <div class="panel-section">
+        <h3>Grafika i Styl Pixel-Art</h3>
+        <div class="control-row">
+          <label>Rozdzielczość renderowania:</label>
+          <div class="btn-group three-btn">
+            <button class="res-btn active" data-scale="0.5">0.5x Retro</button>
+            <button class="res-btn" data-scale="0.75">0.75x</button>
+            <button class="res-btn" data-scale="1.0">1.0x Ostry</button>
+          </div>
+        </div>
+        <label class="toggle-row">
+          <span>Filtr Kineskopowy (CRT Lottes)</span>
+          <input type="checkbox" id="toggle-crt">
+        </label>
+        <div class="control-row">
+          <label for="crt-slider">Intensywność CRT: <span id="crt-val">25%</span></label>
+          <input type="range" id="crt-slider" min="0" max="1" step="0.05" value="0.25">
+        </div>
+        <label class="toggle-row">
+          <span>Kontury Krawędzi (Outline)</span>
+          <input type="checkbox" id="toggle-outline" checked>
+        </label>
+      </div>
+
+      <div class="panel-footer">
+        <button id="btn-copy-link" class="btn-primary">Kopiuj Link do Widoku</button>
+      </div>
+    </aside>
+
+    <!-- Interactive City Minimap -->
+    <div id="hud-minimap" title="Kliknij, aby przenieść kamerę">
+      <canvas id="hud-minimap-canvas" width="154" height="154"></canvas>
+      <span class="minimap-label">OPOLE 14×14 km</span>
+    </div>
+
+    <!-- Bottom Left Author & Open Data Credit (izo.md section 1 & 6) -->
+    <footer id="hud-credit">
+      <span>Utworzono z ♥ dla Opola</span> • 
+      <a href="#about" id="open-about">Źródła Danych (GUGiK, OSM, MZK)</a>
+    </footer>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal-hidden">
+      <div class="modal-content">
+        <h3>Opole-IZO — Informacje o Projekcie</h3>
+        <p>Aplikacja jest izometryczną, trójwymiarową symulacją życia miasta <strong>Opole</strong> w stylu pixel-art.</p>
+        <h4>Otwarte źródła danych:</h4>
+        <ul>
+          <li><strong>Główny Urząd Geodezji i Kartografii (GUGiK):</strong> Numeryczny Model Terenu (NMT), Numeryczny Model Pokrycia Terenu (NMPT), Modele 3D budynków LoD2 (PZGiK, licencja CC BY 4.0).</li>
+          <li><strong>OpenStreetMap:</strong> Siatka dróg, rzeka Odra, kanał Młynówka, tereny zielone, POI, sygnalizacja (© OpenStreetMap contributors, ODbL).</li>
+          <li><strong>MZK Opole / zbiorkom.live:</strong> Pozycje pojazdów na żywo oraz rozkład jazdy (GTFS-RT).</li>
+          <li><strong>Open-Meteo:</strong> Dane meteorologiczne na żywo dla Opola (CC BY 4.0).</li>
+        </ul>
+        <button id="close-about" class="btn-primary">Zamknij</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

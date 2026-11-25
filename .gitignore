@@ -1,0 +1,17 @@
+# Python pipeline environments & caches
+pipeline/venv/
+pipeline/__pycache__/
+*.pyc
+
+# Raw geodata downloads & intermediate build artifacts
+data/raw/
+data/build/
+
+# Frontend dependencies & Vite production bundle
+web/node_modules/
+web/dist/
+
+# Misc / OS / temp files
+.DS_Store
+*.log
+*.part
