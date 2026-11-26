@@ -8,9 +8,9 @@ import * as THREE from 'three';
 export const POI_LOCATIONS = {
   rynek: { name: "Rynek i Ratusz", x: -88, z: -195, mpt: 0.35, azimuth: 205 },
   wieza: { name: "Wieża Piastowska", x: -300, z: -62, mpt: 0.30, azimuth: 160 },
-  amfiteatr: { name: "Amfiteatr Tysiąclecia", x: -365, z: -90, mpt: 0.38, azimuth: 190 },
+  amfiteatr: { name: "Amfiteatr Tysiąclecia", x: -395, z: -70, mpt: 0.38, azimuth: 190 },
   katedra: { name: "Katedra Świętego Krzyża", x: -234, z: -390, mpt: 0.32, azimuth: 220 },
-  wenecja: { name: "Opolska Wenecja", x: -251, z: -174, mpt: 0.28, azimuth: 135 },
+  wenecja: { name: "Opolska Wenecja", x: -235, z: -200, mpt: 0.28, azimuth: 135 },
   groszowy: { name: "Most Groszowy (Zielony)", x: -101, z: 92, mpt: 0.28, azimuth: 150 },
   dworzec: { name: "Dworzec Opole Główne", x: 199, z: 563, mpt: 0.36, azimuth: 210 },
   solaris: { name: "Solaris & Plac Kopernika", x: 191, z: -364, mpt: 0.35, azimuth: 225 },

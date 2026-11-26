@@ -66,7 +66,6 @@ export class LandmarksManager {
     this.buildAmfiteatr();
     this.buildKatedra();
     this.buildMostGroszowy();
-    this.buildOpolskaWenecja();
     this.buildDworzecGlowny();
     this.buildSolarisCenter();
   }
@@ -171,10 +170,10 @@ export class LandmarksManager {
     this.landmarksGroup.add(group);
   }
 
-  // 3. Amfiteatr Tysiąclecia (Next to Wieża Piastowska: x = -365, z = -90)
+  // 3. Amfiteatr Tysiąclecia (Next to Wieża Piastowska: x = -395, z = -70)
   buildAmfiteatr() {
     const group = new THREE.Group();
-    group.position.set(-365, 4.0, -90);
+    group.position.set(-395, 4.0, -70);
 
     const bowl = new THREE.Mesh(
       new THREE.CylinderGeometry(36, 18, 6, 24, 1, true, 0, Math.PI * 1.3),
@@ -269,13 +268,13 @@ export class LandmarksManager {
     this.landmarksGroup.add(group);
   }
 
-  // 5. Most Groszowy / Most Zielony (Real coords: x = -101, z = 92)
+  // 5. Most Groszowy / Most Zielony (Real OSM span: (-118.3, 101.7) to (-83.0, 82.0))
   buildMostGroszowy() {
     const group = new THREE.Group();
     group.position.set(-101, 2.0, 92);
-    group.rotation.y = Math.PI * 0.42; // Spans East-West across Kanał Młynówka
+    group.rotation.y = Math.atan2(35.3, -19.7); // Exact alignment across Kanał Młynówka
 
-    const deck = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.6, 38), this.materials.wood);
+    const deck = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.6, 40), this.materials.wood);
     deck.position.y = 2.5;
     group.add(deck);
 
@@ -317,42 +316,6 @@ export class LandmarksManager {
     }
 
     this.groups.groszowy = group;
-    this.landmarksGroup.add(group);
-  }
-
-  // 6. Opolska Wenecja (Canal waterfront along Młynówka: x = -251, z = -174)
-  buildOpolskaWenecja() {
-    const group = new THREE.Group();
-    group.position.set(-251, 3.0, -174);
-
-    const quayWall = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 72), this.materials.stone);
-    quayWall.position.set(4, 1.5, 0);
-    group.add(quayWall);
-
-    const wenecjaColors = [0xf5cd79, 0xf8a5c2, 0x63cdda, 0xe77f67, 0x778beb];
-    for (let i = 0; i < 5; i++) {
-      const hMat = new THREE.MeshLambertMaterial({ color: wenecjaColors[i] });
-      const house = new THREE.Mesh(new THREE.BoxGeometry(9, 11 + (i % 2) * 2, 13), hMat);
-      house.position.set(-2, 6, -26 + i * 13);
-      group.add(house);
-
-      // Warm waterfront house windows facing Młynówka canal
-      for (const wy of [4.5, 8.5]) {
-        for (const wzOff of [-3.2, 3.2]) {
-          const wMesh = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.8, 1.5), this.materials.winWarm);
-          wMesh.position.set(2.55, wy, -26 + i * 13 + wzOff);
-          group.add(wMesh);
-        }
-      }
-
-      const rGeom = new THREE.ConeGeometry(7.2, 4.5, 4);
-      rGeom.rotateY(Math.PI / 4);
-      const rMesh = new THREE.Mesh(rGeom, this.materials.terracotta);
-      rMesh.position.set(-2, 13.5 + (i % 2) * 2, -26 + i * 13);
-      group.add(rMesh);
-    }
-
-    this.groups.wenecja = group;
     this.landmarksGroup.add(group);
   }
 
