@@ -49,7 +49,7 @@ A browser-based isometric pixel-art 3D living simulation of the city of **Opole,
 ## 🚀 Quick Start
 
 ### 1. Launch the Server
-To run the precomputed application right away:
+To run the precomputed application right away (installs `web/` dependencies and builds `web/dist` automatically on first run; requires Node.js):
 ```bash
 ./start.sh
 ```

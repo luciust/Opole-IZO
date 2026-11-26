@@ -181,15 +181,21 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Static files server (web/dist or web/public)
-  let filePath = path.join(WEB_DIST, pathname === '/' ? 'index.html' : pathname);
-  if (!fs.existsSync(filePath)) {
-    filePath = path.join(WEB_PUBLIC, pathname);
+  const safeRelPath = path.normalize(pathname === '/' ? 'index.html' : pathname).replace(/^(\.\.[/\\])+/, '');
+  const isFile = (p) => fs.existsSync(p) && fs.statSync(p).isFile();
+
+  let filePath = path.join(WEB_DIST, safeRelPath);
+  if (!isFile(filePath)) {
+    filePath = path.join(WEB_PUBLIC, safeRelPath);
   }
-  if (!fs.existsSync(filePath)) {
-    filePath = path.join(WEB_DIST, 'index.html');
+  if (!isFile(filePath)) {
+    // Only fall back to SPA index.html for non-asset/non-data routes
+    if (!pathname.startsWith('/data/') && !pathname.startsWith('/assets/')) {
+      filePath = path.join(WEB_DIST, 'index.html');
+    }
   }
 
-  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+  if (isFile(filePath)) {
     const ext = path.extname(filePath).toLowerCase();
     res.setHeader('Content-Type', MIME_TYPES[ext] || 'application/octet-stream');
     
@@ -202,9 +208,19 @@ const server = http.createServer(async (req, res) => {
     return fs.createReadStream(filePath).pipe(res);
   }
 
+  if (!isFile(path.join(WEB_DIST, 'index.html'))) {
+    res.statusCode = 503;
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    return res.end('Frontend bundle not built (web/dist/index.html missing). Run ./start.sh or: cd web && npm install && npm run build');
+  }
+
   res.statusCode = 404;
   res.end('Not Found');
 });
+
+if (!fs.existsSync(path.join(WEB_DIST, 'index.html'))) {
+  console.warn('Warning: web/dist/index.html not found. Run ./start.sh or "cd web && npm install && npm run build".');
+}
 
 server.listen(PORT, () => {
   console.log(`Opole-IZO Caching Proxy listening on http://localhost:${PORT}`);
