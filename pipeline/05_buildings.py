@@ -35,8 +35,6 @@ LANDMARK_BOXES = [
     {"name": "Katedra", "min_x": -275, "max_x": -190, "min_z": -425, "max_z": -355},
     # Dworzec Główny PKP (199.2, 562.6)
     {"name": "Dworzec_Glowny", "min_x": 145, "max_x": 250, "min_z": 525, "max_z": 605},
-    # Solaris Center (190.8, -363.5)
-    {"name": "Solaris", "min_x": 115, "max_x": 260, "min_z": -460, "max_z": -290},
     # Most Groszowy (-100.7, 91.9)
     {"name": "Most_Groszowy", "min_x": -125, "max_x": -75, "min_z": 70, "max_z": 115},
 ]

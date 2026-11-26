@@ -2803,9 +2803,9 @@
         1040.0,
         640.0
       ],
-      "bldgVertices": 131319,
+      "bldgVertices": 131955,
       "treeCount": 15,
-      "binSize": 3718128
+      "binSize": 3735936
     },
     {
       "tx": 8,
@@ -2999,9 +2999,9 @@
         1040.0,
         -360.0
       ],
-      "bldgVertices": 108654,
+      "bldgVertices": 111381,
       "treeCount": 63,
-      "binSize": 3084660
+      "binSize": 3161016
     },
     {
       "tx": 8,

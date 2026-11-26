@@ -67,7 +67,6 @@ export class LandmarksManager {
     this.buildKatedra();
     this.buildMostGroszowy();
     this.buildDworzecGlowny();
-    this.buildSolarisCenter();
   }
 
   // 1. Ratusz w Opolu (Real Rynek coords: x = -88, z = -195)
@@ -362,23 +361,6 @@ export class LandmarksManager {
     }
 
     this.groups.dworzec = group;
-    this.landmarksGroup.add(group);
-  }
-
-  // 8. Solaris Center (Real coords: x = 191, z = -364)
-  buildSolarisCenter() {
-    const group = new THREE.Group();
-    group.position.set(191, 8.0, -364);
-
-    const mallBody = new THREE.Mesh(new THREE.BoxGeometry(74, 16, 62), this.materials.sandstone);
-    mallBody.position.y = 8;
-    group.add(mallBody);
-
-    const glassAtrium = new THREE.Mesh(new THREE.BoxGeometry(36, 14, 4), this.materials.glassNight);
-    glassAtrium.position.set(0, 8, 31.2);
-    group.add(glassAtrium);
-
-    this.groups.solaris = group;
     this.landmarksGroup.add(group);
   }
 }
